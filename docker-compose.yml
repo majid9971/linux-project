@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  # MongoDB Service
+  mongo:
+    image: mongo:latest
+    container_name: majid_mongo_container_new
+    ports:
+      - "3031:27017"  # Exposing MongoDB on port 3031
+    volumes:
+      - pritam_mongo_data:/data/db
+
+  # Backend Service (Python - Flask or FastAPI)
+  backend:
+    build: ./backend
+    container_name: majid_backend_container_new
+    depends_on:
+      - mongo
+    ports:
+      - "5003:5000"  # Exposing backend on port 5003
+    environment:
+      - MONGO_URI=mongodb://majid_mongo_container_new:27017/pritam_test_db  # Connecting to Mongo
+
+  # Frontend Service (React)
+  frontend:
+    build: ./frontend
+    container_name: majid_frontend_container_new
+    depends_on:
+      - backend
+    ports:
+      - "8082:3000"  # Exposing frontend on port 8082
+
+volumes:
+  pritam_mongo_data:
+
