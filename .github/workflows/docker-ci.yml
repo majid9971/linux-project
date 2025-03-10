@@ -28,3 +28,19 @@ jobs:
           docker push majid7991/frontend:latest
           docker push majid7991/backend:${{ github.sha }}
           docker push majid7991/frontend:${{ github.sha }}
+
+      - name: Scan Backend with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "majid7991/backend:latest"
+          format: "table"
+          exit-code: 1
+          severity: "CRITICAL,HIGH"
+
+      - name: Scan Frontend with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: "majid7991/frontend:latest"
+          format: "table"
+          exit-code: 1
+          severity: "CRITICAL,HIGH"
