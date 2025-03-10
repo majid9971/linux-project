@@ -1,0 +1,49 @@
+name: Build, Push, and Deploy Docker Containers
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # Build and push backend image
+      - name: Build Backend Docker Image
+        run: docker build -t majid7991/backend:latest ./backend
+
+      - name: Push Backend Docker Image
+        run: docker push majid7991/backend:latest
+
+      # Build and push frontend image
+      - name: Build Frontend Docker Image
+        run: docker build -t majid7991/frontend:latest ./frontend
+
+      - name: Push Frontend Docker Image
+        run: docker push majid7991/frontend:latest
+
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Deploy to Linux Server via SSH
+  #       uses: appleboy/ssh-action@v0.1.10
+  #       with:
+  #         host: ${{ secrets.SERVER_IP }}
+  #         username: ${{ secrets.SERVER_USER }}
+  #         password: ${{ secrets.SERVER_PASSWORD }}
+  #         script: |
+  #           cd /path/to/linux-project
+  #           git pull origin main
+  #           docker-compose down
+  #           docker-compose pull
+  #           docker-compose up -d
