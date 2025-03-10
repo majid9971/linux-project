@@ -18,7 +18,7 @@ jobs:
 
       - name: Build and tag images using Docker Compose
         run: |
-          docker-compose build
+          docker compose build
           docker tag majid7991/backend:latest majid7991/backend:${{ github.sha }}
           docker tag majid7991/frontend:latest majid7991/frontend:${{ github.sha }}
 
